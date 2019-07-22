@@ -1,25 +1,33 @@
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 import java.lang.reflect.Field;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IllegalAccessException {
         KlasaZPolamiDoWstrzykniecia mojaKlasa = new KlasaZPolamiDoWstrzykniecia();
         // Przed wstrzyknieciem
-        System.out.println(mojaKlasa);
+        System.out.println("Moja klasa: " +mojaKlasa);
         // Wstrzykniecie
-        wstrzyknij(mojaKlasa, "");
+        wstrzyknij(mojaKlasa, "test");
         // Po wstrzyknięciu
+        System.out.println("Moja klasa: " +mojaKlasa);
 
     }
 
-    static void wstrzyknij(Object target, String name) {
+    static void wstrzyknij(Object target, String name) throws IllegalAccessException {
         // TODO pobierz pola obiektu i przeiteruj po nich
         for (Field field: target.getClass().getDeclaredFields()) {
-            System.out.println(field);
+            System.out.println("Pole: " +field);
+            // TODO pobierz adnotacje pola i przeiteruj po nich
+            for (Annotation annotation: field.getDeclaredAnnotations()) {
+                System.out.println("Adnotacja pola: " +annotation);
+                // TODO jeśli znaleziono pole z adnotacją utwórz instancje Colaboratora i przypisz do pola
+                if (annotation instanceof WstrzyknijJesliMnieZnajdziesz) {
+                    field.setAccessible(true);
+                    field.set(target, new Colaborator(name));
+                    field.setAccessible(false);
+                }
+            }
         }
     }
 
@@ -30,7 +38,7 @@ public class Main {
     }
 
     // TODO 2 klasa do wstrzykniecia
-    class Colaborator {
+    static class Colaborator {
         private String name;
 
         public Colaborator(String name) {
