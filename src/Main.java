@@ -2,11 +2,25 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.reflect.Field;
 
 public class Main {
 
     public static void main(String[] args) {
+        KlasaZPolamiDoWstrzykniecia mojaKlasa = new KlasaZPolamiDoWstrzykniecia();
+        // Przed wstrzyknieciem
+        System.out.println(mojaKlasa);
+        // Wstrzykniecie
+        wstrzyknij(mojaKlasa, "");
+        // Po wstrzyknięciu
 
+    }
+
+    static void wstrzyknij(Object target, String name) {
+        // TODO pobierz pola obiektu i przeiteruj po nich
+        for (Field field: target.getClass().getDeclaredFields()) {
+            System.out.println(field);
+        }
     }
 
     // TODO 1 własna adnotacja
@@ -32,7 +46,7 @@ public class Main {
     }
 
     // TODO  klasa z polem do wstrzykniecia
-    class  KlasaZPolamiDoWstrzykniecia {
+    static class  KlasaZPolamiDoWstrzykniecia {
         @WstrzyknijJesliMnieZnajdziesz
         private Colaborator colaborator1;
         private Colaborator colaborator2;
